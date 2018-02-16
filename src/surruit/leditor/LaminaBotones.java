@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package surruit.leditor;
 
 import com.sun.org.apache.xpath.internal.axes.RTFIterator;
@@ -65,10 +60,6 @@ import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 
-/**
- *
- * @author Larry
- */
 public class LaminaBotones extends JToolBar{
     String[] fuentes;
     
@@ -323,51 +314,14 @@ public class LaminaBotones extends JToolBar{
 
     @Override
     public void setLocale(Locale l) {
-        super.setLocale(l); //To change body of generated methods, choose Tools | Templates.
+        super.setLocale(l);
         System.out.println(l.getDisplayLanguage());
         gestorIdiomas.updateLocale(l);
         JColorChooser.setDefaultLocale(l); //debido a un bug hay que especificarle a los chooser los cambios
-    }
-    
-    public void updateLocale(Locale newLocale){ //necesita ser llamado antes de que se cambie el idioma predeterminado, antes de Locale.setDefault()
-        //buttonMonitor.cambiarLocale(newLocale); //actualiza el idioma en todos los botones del monitor
-        //gestorIdiomas.
-        
+        ventanaBuscar.setLocale(l);
     }
 
     //Funciones generales
-    private void initSlider(JSlider slider, String color){
-        slider.setName(color);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        slider.setMaximum(0);
-        slider.setMaximum(255);
-        slider.setMajorTickSpacing(85);
-        slider.setMinorTickSpacing(17);
-        
-        //color
-        switch(color){
-            case "Rojo":
-                slider.setForeground(Color.RED);
-                //label_sliderRojo.setForeground(Color.RED);
-                break;
-            case "Verde":
-                slider.setForeground(Color.GREEN);
-                //label_sliderVerde.setForeground(Color.GREEN);
-                break;
-            case "Azul":
-                slider.setForeground(Color.BLUE);
-                //label_sliderAzul.setForeground(Color.BLUE);
-                break;
-        }
-            
-    }
-    private void testText(){
-        editorPane.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n" +
-"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n" +
-"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n" +
-"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-    }
     private boolean updateButtonGroupTextSize(int size, ButtonGroup bg){ //comprueba si el tamaño de letra size esta en alguno de los botones del grupo
         Enumeration<AbstractButton> enu = bg.getElements();
         int radioTextSize = 0;

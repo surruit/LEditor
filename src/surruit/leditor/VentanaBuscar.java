@@ -1,24 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package surruit.leditor;
 
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-/**
- *
- * @author Larry
- */
 public class VentanaBuscar extends JFrame{
     JLabel texto1;
     JTextField textField1;
@@ -30,12 +24,36 @@ public class VentanaBuscar extends JFrame{
     JButton reemplazar;
     
     BuscarListener bListener;
+    
+    GestorIdiomas gestorIdiomas;
 
     public VentanaBuscar(){
-        this.setTitle("Buscar");
+        gestorIdiomas = new GestorIdiomas();
+        crearComponentes();
+
+        //Eventos
+        bListener = new BuscarListener() {
+            public boolean buscar(String busqueda) {return false;}
+            public void reemplazar(String busqueda, String reempazo) {}
+        };
+        buscar.addActionListener(clicBotones);
+        reemplazar.addActionListener(clicBotones);
+        setLocale(Locale.getDefault());
+    }
+
+    @Override
+    public void setLocale(Locale l) {
+        super.setLocale(l);
+        ResourceBundle bundle = java.util.ResourceBundle.getBundle("surruit.leditor/idioma", l);
+        setTitle(bundle.getString("BUSCARYREEMPLAZAR"));
         
-        //this.setMinimumSize(new Dimension(300, 150));
-        
+        if (gestorIdiomas != null) gestorIdiomas.updateLocale(l);
+        this.pack(); //ajusta al tamaño minimo
+    }
+    
+    
+    
+    public void crearComponentes(){
         lamina = new JPanel();
         texto1 = new JLabel();
         textField1 = new JTextField();
@@ -44,10 +62,6 @@ public class VentanaBuscar extends JFrame{
         buscar = new JButton();
         reemplazar = new JButton();
         
-        texto1.setText("Buscar: ");
-        texto2.setText("Reemplazar con: ");
-        buscar.setText("Buscar");
-        reemplazar.setText("Reemplazar");
         textField1.setPreferredSize(new Dimension(100, 25));
         textField2.setPreferredSize(new Dimension(100, 25));
         
@@ -58,14 +72,12 @@ public class VentanaBuscar extends JFrame{
         lamina.add(buscar);
         lamina.add(reemplazar);
         add(lamina);
-        this.pack(); //ajusta al tamaño minimo
         
-        bListener = new BuscarListener() {
-            public boolean buscar(String busqueda) {return false;}
-            public void reemplazar(String busqueda, String reempazo) {}
-        };
-        buscar.addActionListener(clicBotones);
-        reemplazar.addActionListener(clicBotones);
+        //configuracion lenguaje
+        gestorIdiomas.add(texto1, "BUSCAR_");
+        gestorIdiomas.add(texto2, "REEMPLAZAR_CON_");
+        gestorIdiomas.add(buscar, "BUSCAR");
+        gestorIdiomas.add(reemplazar, "REEMPLAZAR");
     }
     
     ActionListener clicBotones = new ActionListener() {

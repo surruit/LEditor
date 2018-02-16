@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package surruit.leditor;
 
 import java.awt.BorderLayout;
@@ -13,10 +8,6 @@ import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-/**
- *
- * @author Larry
- */
 public class Ventana extends JFrame {
     Lamina lamina;
     LaminaBotones laminaBotones;
