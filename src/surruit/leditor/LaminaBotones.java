@@ -1,38 +1,24 @@
 package surruit.leditor;
 
-import com.sun.org.apache.xpath.internal.axes.RTFIterator;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
@@ -57,43 +43,109 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 
+/**
+ * Clase que contiene y gestiona todos los botones de la interfaz
+ * @author Surruit
+ */
 public class LaminaBotones extends JToolBar{
+    /**
+     * Listado de fuentes soportadas por el sistema
+     */
     String[] fuentes;
     
+    /**
+     * Barra de menú en la que se encuentran todos los menús
+     */
     JMenuBar menuBar;
+    /**
+     * Menú con controles para cambiar la fuente
+     */
     JMenu menuFuente;
+    /**
+     * Menú con controles para cambiar el estilo (Negrita, cursiva, etc..)
+     */
     JMenu menuEstilo;
+    /**
+     * Menú con tamaños de letra comunes
+     */
     JMenu menuTamanio;
+    /**
+     * Menú con controles de alineado de texto
+     */
     JMenu menuAlineado;
+    /**
+     * Menú con acciones sobre ficheros
+     */
     JMenu menuArchivo;
+    /**
+     * Menú con controles para cambios de colores de letras
+     */
     JMenu menuColor;
+    /**
+     * Menú con controles para ver información de la aplicación
+     */
     JMenu menuInformacion;
+    /**
+     * Menú para cambio de idioma en tiempo de ejecución
+     */
     JMenu menuIdioma;
+    /**
+     * Menú con controles sobre el texto
+     */
     JMenu menuEditar;
     
+    /**
+     * ButtonGroup para los RadioButton del menu menuTamanio
+     */
     ButtonGroup menuTamanioButtonGroup;
     
+    /**
+     * Menú contextual
+     */
     JPopupMenu popupMenu;
     
-    JEditorPane editorPane; //JEditorPane al que afectan los botones
+    /**
+     * Campo de edición de texto principal
+     */
+    JEditorPane editorPane;
     
+    /**
+     * ButtonMonitor que maneja los botones de esta clase
+     */
     ButtonMonitor buttonMonitor;
     
+    /**
+     * Editor de tipo RTF para el texto.
+     */
     RTFEditorKit editorKit;
     
+    /**
+     * Referencia al portapapeles del sistema
+     */
     Clipboard portapapeles;
     
     
-    
+    /**
+     * Fabrica de botones para esta clase
+     */
     ButtonFactory buttonFactory;
+    /**
+     * Gestor de idiomas que maneja la traducción de la interfaz
+     * 
+     * @see #setLocale(java.util.Locale)
+     */
     GestorIdiomas gestorIdiomas;
     
+    /**
+     * Ventana para realizar busqueda de texto
+     */
     VentanaBuscar ventanaBuscar;
     
-    
+    /**
+     * Constructor de la clase
+     */
     public LaminaBotones(){
         buttonMonitor = new ButtonMonitor(this);
         buttonFactory = new ButtonFactory();
@@ -120,6 +172,9 @@ public class LaminaBotones extends JToolBar{
         
     }
     
+    /**
+     * Crea y configura los menús de la ventana
+     */
     private void crearMenus(){
         menuBar = new JMenuBar();
         menuFuente = new JMenu();
@@ -154,6 +209,11 @@ public class LaminaBotones extends JToolBar{
         menuBar.add(menuInformacion);
         menuBar.add(menuIdioma);
     }
+    /**
+     * Crea todos los botones de la lamina
+     * 
+     * @see ButtonFactory
+     */
     private void generarBotones(){
         //crear botones de barra
         generarBoton(ButtonMonitor.MONITOR_NEGRITA, "/icons/format-bold.png", this);
@@ -244,11 +304,26 @@ public class LaminaBotones extends JToolBar{
         buttonFactory.boton_setStaticText("22pt");
         menuTamanio.add(buttonFactory.getAButton()); 
     }
+    /**
+     * Crea un botón y realiza algunas configuraciones con el
+     * @param monitorCode constante MONITOR_ de ButtonMonitor
+     * @param iconPath ruta de la imagen en los recursos
+     * @param addTo componente al que se añadirá el boton al generarse, puede ser
+     * la ventana, un menú, etc...
+     */
     private void generarBoton(Integer monitorCode, String iconPath, JComponent addTo){
         buttonFactory.newButton(monitorCode);
         buttonFactory.boton_setIconByPath(iconPath);
         addTo.add(buttonFactory.getAButton());
     }
+    /**
+     * Crea un botón y realiza algunas configuraciones con el
+     * @param monitorCode constante MONITOR_ de ButtonMonitor
+     * @param iconPath ruta de la imagen en los recursos
+     * @param addTo componente al que se añadirá el boton al generarse, puede ser
+     * la ventana, un menú, etc...
+     * @param resourceKey clave del recurso de texto para el texto del botón
+     */
     private void generarBoton(Integer monitorCode, String resourceKey, String iconPath, JComponent addTo){
         Box caja = Box.createHorizontalBox();
         
@@ -263,19 +338,38 @@ public class LaminaBotones extends JToolBar{
         
         addTo.add(caja);
     }
+    /**
+     * Crea un Elemento de menú y realiza algunas configuraciones con el
+     * @param monitorCode constante MONITOR_ de ButtonMonitor
+     * @param iconPath ruta de la imagen en los recursos
+     * @param addTo componente al que se añadirá el boton al generarse, puede ser
+     * la ventana, un menú, etc...
+     * @param resourceKey clave del recurso de texto para el texto del botón
+     */
     private void generarMenuItem(Integer monitorCode, String resourceKey, String iconPath, JComponent addTo){
         buttonFactory.newMenuItem(monitorCode);
         buttonFactory.boton_setTextByLocaleResource(resourceKey);
         buttonFactory.boton_setIconByPath(iconPath);
         addTo.add(buttonFactory.getAButton());
     }
+    /**
+     * Crea un CheckBox de tipo menú y realiza algunas configuraciones con el
+     * @param monitorCode constante MONITOR_ de ButtonMonitor
+     * @param iconPath ruta de la imagen en los recursos
+     * @param addTo componente al que se añadirá el boton al generarse, puede ser
+     * la ventana, un menú, etc...
+     * @param resourceKey clave del recurso de texto para el texto del botón
+     */
     private void generarCheckBoxMenuItem(Integer monitorCode, String resourceKey, String iconPath, JComponent addTo){
         buttonFactory.newCheckBoxMenuItem(monitorCode);
         buttonFactory.boton_setTextByLocaleResource(resourceKey);
         buttonFactory.boton_setIconByPath(iconPath);
         addTo.add(buttonFactory.getAButton());
     }
-    
+    /**
+     * Asigna todos lo Updaters a su correspondiente grupo en el monitor
+     * @see ButtonMonitor#addUpdater(int, surruit.leditor.ButtonMonitor.Updater)
+     */
     private void setUpdaters(){
         buttonMonitor.addUpdater(ButtonMonitor.MONITOR_FUENTE, fontUpdater);
         buttonMonitor.addUpdater(ButtonMonitor.MONITOR_NEGRITA, negritaUpdater);
@@ -298,7 +392,12 @@ public class LaminaBotones extends JToolBar{
         buttonMonitor.addUpdater(ButtonMonitor.MONITOR_CORTAR, cortar_Updater);
         buttonMonitor.addUpdater(ButtonMonitor.MONITOR_BUSCAR, buscar_Updater);
     }
-    //Funciones publicas
+    /**
+     * Asigna el editorPane al que hacen referencia todos los botones de esta lamina y
+     * realiza algunas configuraciones.
+     * Debe llamarse a este método lo antes posible
+     * @param ep nuevo JEditorPane
+     */
     public void setEditorPane(JEditorPane ep){
         editorPane = ep;
         ep.setEditorKit(editorKit);
@@ -306,12 +405,15 @@ public class LaminaBotones extends JToolBar{
         editorPane.setComponentPopupMenu(popupMenu); //añade el popup como menu contextual
         buttonMonitor.setEditorPane(ep);
     }
+    /**
+     * Devuelve una referencia a la barra de menú
+     * @return la barra de menú
+     */
     public JMenuBar getMenuBar(){ return menuBar;}
-    public void setToDefauld(){
-        //buttonMonitor.updateFamily(combo_tamanioFuente); //actualiza el numero al predefinido en el Updater
-        //testText();
-    }
-
+    /**
+     * Metodo que gestiona gracias a gestorIdiomas las traducciones
+     * @param l nuevo Locale
+     */
     @Override
     public void setLocale(Locale l) {
         super.setLocale(l);
@@ -321,15 +423,20 @@ public class LaminaBotones extends JToolBar{
         ventanaBuscar.setLocale(l);
     }
 
-    //Funciones generales
-    private boolean updateButtonGroupTextSize(int size, ButtonGroup bg){ //comprueba si el tamaño de letra size esta en alguno de los botones del grupo
+    /**
+     * Comprueba si un tamaño de letra se encuentra entre las opciones de los radio button del ButtonGroup y lo actualiza
+     * @param size tamaño a comprobar
+     * @param bg ButtonGroup donde comprobar
+     * @return si se encuentra o no el tamaño de letra entre las opciones
+     */
+    private boolean updateButtonGroupTextSize(int size, ButtonGroup bg){
         Enumeration<AbstractButton> enu = bg.getElements();
         int radioTextSize = 0;
         JRadioButtonMenuItem button;
         
         while(enu.hasMoreElements()){
             button = (JRadioButtonMenuItem)enu.nextElement();
-            radioTextSize = Integer.parseInt(button.getText().substring(0, 2)); //objetiene el tamaño de letra mediante el texto del boton
+            radioTextSize = Integer.parseInt(button.getText().substring(0, 2)); //obtiene el tamaño de letra mediante el texto del boton
             if (size == radioTextSize){
                 button.setSelected(true);
                 return true;
@@ -338,9 +445,17 @@ public class LaminaBotones extends JToolBar{
         bg.clearSelection();
         return false;
     }
+    /**
+     * Carga un fichero de texto en el panel de texto
+     * @param path ruta del fichero de texto
+     */
     private void loadtextFile(String path){
         LoaderHelper.load(editorPane, path);
     }
+    /**
+     * Guarda el texto del panel en la ruta dada
+     * @param path ruta donde guardar el archivo
+     */
     private void saveTextFile(String path){
         try {
             FileOutputStream writer = new FileOutputStream(path);
@@ -354,6 +469,9 @@ public class LaminaBotones extends JToolBar{
             Logger.getLogger(LaminaBotones.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    /**
+     * Borra el texto seleccionado por el cursor actualmente
+     */
     private void deleteSelectedText(){
         try {
             editorPane.getDocument().remove(editorPane.getSelectionStart(), editorPane.getSelectionEnd()-editorPane.getSelectionStart());
@@ -362,7 +480,9 @@ public class LaminaBotones extends JToolBar{
         }
     }
     
-    //listeners
+    /**
+     * Listener para la ventana de buscar y reemplazar
+     */
     VentanaBuscar.BuscarListener buscarListener = new VentanaBuscar.BuscarListener() {
         @Override
         public boolean buscar(String busqueda) {
@@ -398,7 +518,10 @@ public class LaminaBotones extends JToolBar{
         }
     };
     
-    //funciones Updaters
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_FUENTE
+     */
     ButtonMonitor.Updater fontUpdater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -442,6 +565,10 @@ public class LaminaBotones extends JToolBar{
             return StyleConstants.getFontFamily(editorKit.getInputAttributes());
         }
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_NEGRITA
+     */
     ButtonMonitor.Updater negritaUpdater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -486,6 +613,10 @@ public class LaminaBotones extends JToolBar{
             return StyleConstants.isBold(editorKit.getInputAttributes());
         }
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_CURSIVA
+     */
     ButtonMonitor.Updater cursivaUpdater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -526,6 +657,10 @@ public class LaminaBotones extends JToolBar{
             return StyleConstants.isItalic(editorKit.getInputAttributes());
         }
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_FUENTE_TAMANIO
+     */
     ButtonMonitor.Updater fuenteTamanioUpdater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -574,6 +709,10 @@ public class LaminaBotones extends JToolBar{
             return StyleConstants.getFontSize(editorKit.getInputAttributes());
         }
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_COLOR
+     */
     ButtonMonitor.Updater coloresUpdater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -646,6 +785,10 @@ public class LaminaBotones extends JToolBar{
             return StyleConstants.getForeground(editorKit.getInputAttributes()).getRGB();
         }
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_SUBRAYADO
+     */
     ButtonMonitor.Updater subrayadoUpdater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -681,6 +824,10 @@ public class LaminaBotones extends JToolBar{
             return StyleConstants.isUnderline(editorKit.getInputAttributes());
         }
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_ALINEADO_IZQUIERDA
+     */
     ButtonMonitor.Updater alineado_izquierda_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -705,6 +852,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_ALINEADO_DERECHA
+     */
     ButtonMonitor.Updater alineado_derecha_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -729,6 +880,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_ALINEADO_CENTRADO
+     */
     ButtonMonitor.Updater alineado_centrado_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -753,6 +908,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_ALINEADO_JUSTIFICADO
+     */
     ButtonMonitor.Updater alineado_justificado_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -777,6 +936,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_ABRIR
+     */
     ButtonMonitor.Updater abrir_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -795,6 +958,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_GUARDAR
+     */
     ButtonMonitor.Updater guardar_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -812,6 +979,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_ACERCA_DE
+     */
     ButtonMonitor.Updater acercaDe_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -824,6 +995,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_SALIR
+     */
     ButtonMonitor.Updater salir_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -838,6 +1013,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_IDIOMA_ESPANOL
+     */
     ButtonMonitor.Updater idiomaEspanol_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -850,6 +1029,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_IDIOMA_INGLES
+     */
     ButtonMonitor.Updater idiomaIngles_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -863,6 +1046,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_COPIAR
+     */
     ButtonMonitor.Updater copiar_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -877,6 +1064,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_PEGAR
+     */
     ButtonMonitor.Updater pegar_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -901,6 +1092,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_CORTAR
+     */
     ButtonMonitor.Updater cortar_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {
@@ -917,6 +1112,10 @@ public class LaminaBotones extends JToolBar{
         @Override
         public Object caretUpdateValue() {return true;}
     };
+    /**
+     * Updater para el monitor.
+     * @see ButtonMonitor#MONITOR_BUSCAR
+     */
     ButtonMonitor.Updater buscar_Updater = new ButtonMonitor.Updater() {
         @Override
         public void update(List<JComponent> botones, JComponent source) {

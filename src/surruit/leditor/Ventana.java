@@ -1,19 +1,36 @@
 package surruit.leditor;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+/**
+ * Representa la ventana grafica principal
+ * @author Surruit
+ */
 public class Ventana extends JFrame {
+    /**
+     * Instancia de Lamina de texto
+     */
     Lamina lamina;
+    /**
+     * Instancia de la lamina que gestiona los botones
+     */
     LaminaBotones laminaBotones;
+    /**
+     * Instancia de la lamina que muestra información del texto
+     */
     LaminaInfo laminaInfo;
+    /**
+     * Referencia a los recursos de texto
+     */
     ResourceBundle bundle;
     
+    /**
+     * Constructor de la ventana
+     */
     public Ventana(){
         //configuracion inicial
         super(); //llamada al constructor de JFrame
@@ -27,7 +44,6 @@ public class Ventana extends JFrame {
         
         laminaBotones = new LaminaBotones();
         laminaBotones.setEditorPane(lamina.getEditorPane());
-        laminaBotones.setToDefauld();
         
         laminaInfo = new LaminaInfo(lamina.getEditorPane());
         
@@ -43,7 +59,10 @@ public class Ventana extends JFrame {
         this.setJMenuBar(laminaBotones.getMenuBar());
         
     }
-
+    /**
+     * Metodo que gestiona gracias a gestorIdiomas las traducciones
+     * @param l nuevo Locale
+     */
     @Override
     public void setLocale(Locale l) {
         super.setLocale(l);

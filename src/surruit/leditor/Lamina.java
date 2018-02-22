@@ -3,17 +3,8 @@ package surruit.leditor;
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.spi.FileTypeDetector;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,11 +13,26 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.TransferHandler;
-
+/**
+ * Lamina que contiene un JEditorPane y gestiona su dragAndDrop
+ * 
+ * @author Surruit
+ */
 public class Lamina extends JPanel{
+    /**
+     * JEditorPane de esta lamina. Area donde se escribe el texto
+     */
     JEditorPane texto;
+    /**
+     * Permite el scroll sobre el texto del JEditorPane
+     * 
+     * @see #texto
+     */
     JScrollPane scroll;
     
+    /**
+     * Constructor de Lamina
+     */
     public Lamina(){
         setLayout(new GridLayout(1, 1));
         texto = new JEditorPane();
@@ -38,10 +44,19 @@ public class Lamina extends JPanel{
         
         texto.setTransferHandler(transferHandler);
     }
-
+    
+    /**
+     * Devuelve el JEditorPane de esta lamina
+     * @return JEditorPane principal
+     */
     public JEditorPane getEditorPane(){ return texto;}
     
-    TransferHandler transferHandler = new TransferHandler(){
+    /**
+     * TransferHandler que permite el drag and drop de archivos de texto para cargarlo.
+     * 
+     * @see #texto
+     */
+    private TransferHandler transferHandler = new TransferHandler(){
         private File fileByTransfer(TransferSupport transferHandler){ try {
             //Solo el primer archivo
             List<File> files= (List<File>) transferHandler.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);

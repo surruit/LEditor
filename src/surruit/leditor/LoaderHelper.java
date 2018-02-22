@@ -7,9 +7,20 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JEditorPane;
-import javax.swing.text.SimpleAttributeSet;
 
+/**
+ * Clase de apoyo para realizar funciones de carga de archivos
+ * @author Surruit
+ */
 public class LoaderHelper {
+    /**
+     * Intenta cargar un archivo como RTF.
+     * @param ep JEditorPane objetivo de la carga del texto
+     * @param path ruta del archivo a cargar
+     * @return
+     *      true: Carga como RTF completa y correcta <br>
+     *      false: Carga como RTF erronea, archivo no encontrado o formato distinto a RTF
+     */
     public static boolean loadRTF(JEditorPane ep, String path){
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -24,7 +35,15 @@ public class LoaderHelper {
         if (ep.getDocument().getLength() > 0) return true;
         else return false;
     }
-    
+    /**
+     * Intenta cargar un archivo como Texto plano.
+     * @param ep JEditorPane objetivo de la carga del texto
+     * @param path ruta del archivo a cargar
+     * @return
+     *      true: Carga como texto plano completa y correcta <br>
+     *      false: Carga erronea, archivo no encontrado
+     * @see #loadPlane2(javax.swing.JEditorPane, java.lang.String) 
+     */
     public static boolean loadPlane(JEditorPane ep, String path){
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -44,7 +63,16 @@ public class LoaderHelper {
         
         return false;
     }
-    
+    /**
+     * Intenta cargar un archivo como Texto plano. Modifica el formato de texto del JEditorPane a
+     * texto plano si no lo es ya.
+     * @param ep JEditorPane objetivo de la carga del texto
+     * @param path ruta del archivo a cargar
+     * @return
+     *      true: Carga como texto plano completa y correcta <br>
+     *      false: Carga erronea, archivo no encontrado
+     * @see #loadPlane(javax.swing.JEditorPane, java.lang.String) 
+     */
     public static boolean loadPlane2(JEditorPane ep, String path){
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -62,7 +90,14 @@ public class LoaderHelper {
         if (ep.getDocument().getLength() > 0) return true;
         else return false;
     }
-    
+    /**
+     * Intenta cargar un archivo empleando los metodos loadRTF y loadPlane2.
+     * @param ep JEditorPane objetivo de la carga del texto
+     * @param path ruta del archivo a cargar
+     * @return
+     *      true: Carga correcta <br>
+     *      false: Carga erronea, archivo no encontrado.
+     */
     public static boolean load(JEditorPane ep, String path){
         ep.setContentType("text/rtf");
         if (loadRTF(ep, path)) return true;
